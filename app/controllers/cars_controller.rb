@@ -1,9 +1,22 @@
 class CarsController < ApplicationController
-  before_action :set_car, only: [:show, :edit, :update, :destroy]
-
+  before_action :set_car, only: [:show, :edit, :update, :destroy, :claim]
 
   def index
-    @cars = Car.all.paginate( page: params[:page], per_page: 20)
+    @cars = Car.where(user_id: nil).paginate(page: params[:page], per_page: 20)
+  end
+
+  def my_cars
+    @cars = Car.where(user_id: current_user.id).paginate(page: params[:page], per_page: 20)
+    render 'cars/index'
+  end
+
+  def claim
+    if current_user
+      # @car.user = current_user
+      current_user.cars << @car
+      redirect_to root_path, notice: "#{@car.make} #{@car.model} has been moved to your inventory."
+    end
+
   end
 
   def new
@@ -48,12 +61,12 @@ class CarsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_car
-      @car = Car.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_car
+    @car = Car.find(params[:id])
+  end
 
-    def car_params
-      params.require(:car).permit(:make, :model, :year, :price)
-    end
+  def car_params
+    params.require(:car).permit(:make, :model, :year, :price)
+  end
 end

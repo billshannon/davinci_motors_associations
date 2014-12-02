@@ -6,4 +6,6 @@ class Car < ActiveRecord::Base
     less_than: 1_000_000
   }
   validates :year, inclusion: 1769..Time.zone.now.year
+
+  belongs_to :user
 end

@@ -8,5 +8,7 @@ RSpec.describe Car, :type => :model do
   it { should validate_numericality_of :price}
 
   it { should validate_numericality_of(:price).is_less_than(1_000_000).is_greater_than(0.00)}
-  it { should ensure_inclusion_of(:year).in_range(1769..Time.zone.now.year)}
+  it { should validate_inclusion_of(:year).in_range(1769..Time.zone.now.year)}
+
+  it {should belong_to(:user) }
 end
