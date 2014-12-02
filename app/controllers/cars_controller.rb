@@ -1,5 +1,5 @@
 class CarsController < ApplicationController
-  before_action :set_car, only: [:show, :edit, :update, :destroy, :claim]
+  before_action :set_car, only: [:show, :edit, :update, :destroy, :claim, :unclaim]
 
   def index
     @cars = Car.where(user_id: nil).paginate(page: params[:page], per_page: 20)
@@ -14,10 +14,20 @@ class CarsController < ApplicationController
     if current_user
       # @car.user = current_user
       current_user.cars << @car
-      redirect_to root_path, notice: "#{@car.make} #{@car.model} has been moved to your inventory."
+      redirect_to root_path,
+                  notice: "#{@car.make} #{@car.model} has been moved to your inventory."
+    end
     end
 
-  end
+    def unclaim
+      if current_user
+        # @car.user = current_user
+        @car.user = nil
+        @car.save
+        redirect_to root_path,
+                    notice: "#{@car.make} #{@car.model} has been sold!"
+      end
+    end
 
   def new
     @car = Car.new

@@ -17,8 +17,11 @@
       <th>Year</th>
       <th>Price</th>
       <th></th>
-      <th></th>
-      <th></th>
+      <% if current_user %>
+        <th></th>
+        <th></th>
+        <th></th>
+      <% end %>
     </tr>
     </thead>
 
@@ -29,9 +32,17 @@
       <td><%= car.year %></td>
       <td><%= number_to_currency(car.price) %></td>
       <td><%= link_to 'Show', car %></td>
-      <td><%= link_to 'Edit', edit_car_path(car) %></td>
-      <td><%= link_to 'Claim', claim_car_path(car) %></td>
-      <td><%= link_to 'Destroy', car, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      <% if current_user %>
+        <td><%= link_to 'Edit', edit_car_path(car) %></td>
+        <td>
+          <% if current_user.cars.include?(car) %>
+            <%= link_to 'Unclaim', unclaim_car_path(car) %>
+          <% else %>
+            <%= link_to 'Claim', claim_car_path(car) %>
+          <% end %>
+        </td>
+        <td><%= link_to 'Destroy', car, method: :delete, data: {confirm: 'Are you sure?'} %></td>
+      <% end %>
     <% end %>
     </tbody>
   </table>
